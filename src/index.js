@@ -86,7 +86,7 @@ export default class StickyBox extends React.Component {
       this.ropn.observe(this.node.parentNode);
       this.updateParentNode();
 
-      this.ron = new ResizeObserver(this.updateNode);
+      this.ron = new ResizeObserver((e) => this.updateNode(e, true));
       this.ron.observe(this.node);
       this.updateNode({initial: true});
 
@@ -181,7 +181,8 @@ export default class StickyBox extends React.Component {
     }
   }
 
-  updateNode = ({initial} = {}) => {
+  updateNode = ({initial} = {}, isHeightChange) => {
+    console.log('updateNode')
     const prevHeight = this.nodeHeight;
     this.nodeHeight = this.node.getBoundingClientRect().height;
     if (!initial && prevHeight !== this.nodeHeight) {
@@ -197,6 +198,9 @@ export default class StickyBox extends React.Component {
         const lowestPossible = this.parentHeight - this.nodeHeight;
         const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
         this.offset = Math.max(0, Math.min(lowestPossible, current));
+        if (isHeightChange) {
+          this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
+        };
         this.node.style.top = `${this.offset}px`;
       }
     }
