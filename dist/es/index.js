@@ -170,7 +170,6 @@ function (_React$Component) {
       var _ref = _temp === void 0 ? {} : _temp,
           initial = _ref.initial;
 
-      console.log('updateNode');
       var prevHeight = _this.nodeHeight;
       _this.nodeHeight = _this.node.getBoundingClientRect().height;
 
@@ -195,6 +194,7 @@ function (_React$Component) {
             _this.offset -= _this.nodeHeight - _this.viewPortHeight + offsetTop;
           }
 
+          _this.offset = Math.max(0, _this.offset);
           _this.node.style.top = _this.offset + "px";
         }
       }

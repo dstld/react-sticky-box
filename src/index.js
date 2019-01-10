@@ -182,7 +182,6 @@ export default class StickyBox extends React.Component {
   }
 
   updateNode = ({initial} = {}, isHeightChange) => {
-    console.log('updateNode')
     const prevHeight = this.nodeHeight;
     this.nodeHeight = this.node.getBoundingClientRect().height;
     if (!initial && prevHeight !== this.nodeHeight) {
@@ -201,6 +200,7 @@ export default class StickyBox extends React.Component {
         if (isHeightChange) {
           this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
         };
+        this.offset = Math.max(0, this.offset);
         this.node.style.top = `${this.offset}px`;
       }
     }
