@@ -1,7 +1,7 @@
 import * as React from "react";
 import ResizeObserver from "resize-observer-polyfill";
 
-export interface StickyBoxProps
+interface StickyBoxProps
   extends React.HTMLAttributes<HTMLElement> {
   offset?: number;
   offsetTop?: number;
@@ -10,7 +10,7 @@ export interface StickyBoxProps
   onChangeMode?: () => void;
 }
 
-declare const IStickyBox: React.ComponentClass<StickyBoxProps> & {
+export interface StickyBoxInstance {
   mode: string;
   node: HTMLElement;
   scrollPane: HTMLElement | Window;
@@ -24,5 +24,7 @@ declare const IStickyBox: React.ComponentClass<StickyBoxProps> & {
   ron: ResizeObserver;
   ropn: ResizeObserver;
 };
+
+declare const IStickyBox: React.ComponentClass<StickyBoxProps>;
 
 export {IStickyBox as default};
