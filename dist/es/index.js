@@ -175,7 +175,6 @@ function (_React$Component) {
       var nodeRect = _this.node.getBoundingClientRect();
 
       _this.nodeHeight = nodeRect.height;
-      console.log(_this.latestScrollY, _this.parentHeight, _this.scrollPaneOffset);
 
       if (!initial && prevHeight !== _this.nodeHeight) {
         _this.mode = undefined;

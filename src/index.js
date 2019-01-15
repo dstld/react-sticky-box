@@ -185,7 +185,7 @@ export default class StickyBox extends React.Component {
     const prevHeight = this.nodeHeight;
     const nodeRect = this.node.getBoundingClientRect()
     this.nodeHeight = nodeRect.height;
-    console.log(this.latestScrollY, this.parentHeight, this.scrollPaneOffset);
+
     if (!initial && prevHeight !== this.nodeHeight) {
       this.mode = undefined;
       const {offsetTop, offsetBottom} = this.getOffsets();
