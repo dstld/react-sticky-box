@@ -1865,7 +1865,11 @@
             initial = _ref.initial;
 
         var prevHeight = _this.nodeHeight;
-        _this.nodeHeight = _this.node.getBoundingClientRect().height;
+
+        var nodeRect = _this.node.getBoundingClientRect();
+
+        _this.nodeHeight = nodeRect.height;
+        console.log(_this.latestScrollY, _this.parentHeight, _this.scrollPaneOffset);
 
         if (!initial && prevHeight !== _this.nodeHeight) {
           _this.mode = undefined;
@@ -1888,7 +1892,13 @@
               _this.offset -= _this.nodeHeight - _this.viewPortHeight + offsetTop;
             }
 
-            _this.offset = Math.max(0, _this.offset);
+            // stay at bottom if at bottom
+            if (nodeRect.height + _this.latestScrollY >= lowestPossible) {
+              _this.offset = lowestPossible;
+            } else {
+              _this.offset = Math.max(0, _this.offset);
+            }
+
             _this.node.style.top = _this.offset + "px";
           }
         }

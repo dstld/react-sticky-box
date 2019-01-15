@@ -149,7 +149,9 @@ export default class StickyBox extends React.Component {
       initial
     } = {}, isHeightChange) => {
       const prevHeight = this.nodeHeight;
-      this.nodeHeight = this.node.getBoundingClientRect().height;
+      const nodeRect = this.node.getBoundingClientRect();
+      this.nodeHeight = nodeRect.height;
+      console.log(this.latestScrollY, this.parentHeight, this.scrollPaneOffset);
 
       if (!initial && prevHeight !== this.nodeHeight) {
         this.mode = undefined;
@@ -172,7 +174,13 @@ export default class StickyBox extends React.Component {
             this.offset -= this.nodeHeight - this.viewPortHeight + offsetTop;
           }
 
-          this.offset = Math.max(0, this.offset);
+          // stay at bottom if at bottom
+          if (nodeRect.height + this.latestScrollY >= lowestPossible) {
+            this.offset = lowestPossible;
+          } else {
+            this.offset = Math.max(0, this.offset);
+          }
+
           this.node.style.top = `${this.offset}px`;
         }
       }
