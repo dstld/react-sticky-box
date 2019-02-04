@@ -145,46 +145,6 @@ export default class StickyBox extends React.Component {
       }
     };
 
-    this.updateNode = ({
-      initial
-    } = {}, isHeightChange) => {
-      const prevHeight = this.nodeHeight;
-      const nodeRect = this.node.getBoundingClientRect();
-      this.nodeHeight = nodeRect.height;
-
-      if (!initial && prevHeight !== this.nodeHeight) {
-        this.mode = undefined;
-        const {
-          offsetTop,
-          offsetBottom
-        } = this.getOffsets();
-
-        if (this.nodeHeight + offsetTop + offsetBottom <= this.viewPortHeight) {
-          // Just make it sticky if node smaller than viewport
-          this.initial();
-        } else {
-          this.mode = "relative";
-          this.node.style.position = "relative";
-          const lowestPossible = this.parentHeight - this.nodeHeight;
-          const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
-          this.offset = Math.max(0, Math.min(lowestPossible, current));
-
-          if (isHeightChange) {
-            this.offset -= this.nodeHeight - this.viewPortHeight + offsetTop;
-          }
-
-          // stay at bottom if at bottom
-          if (nodeRect.height + this.latestScrollY >= lowestPossible) {
-            this.offset = lowestPossible;
-          } else {
-            this.offset = Math.max(0, this.offset);
-          }
-
-          this.node.style.top = `${this.offset}px`;
-        }
-      }
-    };
-
     this.handleScroll = () => {
       const {
         offsetTop,
@@ -319,6 +279,64 @@ export default class StickyBox extends React.Component {
       this.switchToStickyBottom();
     }
   }
+  /* 
+  updateNode = ({initial} = {}, isHeighChange) => {
+    const prevHeight = this.nodeHeight;
+    const nodeRect = this.node.getBoundingClientRect();
+    this.nodeHeight = nodeRect.height;
+    
+    if (!initial && prevHeight !== this.nodeHeight) {
+      this.mode = undefined;
+      const {offsetTop, offsetBottom} = this.getOffsets();
+      if (this.nodeHeight + offsetTop + offsetBottom <= this.viewPortHeight) {
+        // Just make it sticky if node smaller than viewport
+        this.initial();
+        return;
+      } else {
+        this.mode = "relative";
+        this.node.style.position = "relative";
+        const lowestPossible = this.parentHeight - this.nodeHeight;
+        const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
+        this.offset = Math.max(0, Math.min(lowestPossible, current));
+         if (isHeightChange) {
+          this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
+        };
+         this.node.style.top = `${this.offset}px`;
+      }
+    }
+  };
+  */
+  // updateNode = ({initial} = {}, isHeightChange) => {
+  //   const prevHeight = this.nodeHeight;
+  //   const nodeRect = this.node.getBoundingClientRect()
+  //   this.nodeHeight = nodeRect.height;
+  //   if (!initial && prevHeight !== this.nodeHeight) {
+  //     this.mode = undefined;
+  //     const {offsetTop, offsetBottom} = this.getOffsets();
+  //     if (this.nodeHeight + offsetTop + offsetBottom <= this.viewPortHeight) {
+  //       // Just make it sticky if node smaller than viewport
+  //       this.initial();
+  //       return;
+  //     } else {
+  //       this.mode = "relative";
+  //       this.node.style.position = "relative";
+  //       const lowestPossible = this.parentHeight - this.nodeHeight;
+  //       const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
+  //       this.offset = Math.max(0, Math.min(lowestPossible, current));
+  //       if (isHeightChange) {
+  //         this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
+  //       };
+  //       // stay at bottom if at bottom
+  //       if (nodeRect.height + this.latestScrollY >= lowestPossible) {
+  //         this.offset = lowestPossible;
+  //       } else {
+  //         this.offset = Math.max(0, this.offset);
+  //       }
+  //       this.node.style.top = `${this.offset}px`;
+  //     }
+  //   }
+  // };
+
 
   render() {
     const {
