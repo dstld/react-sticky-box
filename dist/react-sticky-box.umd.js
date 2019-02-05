@@ -1860,10 +1860,46 @@
         }
       };
 
+      _this.updateNode = function (_temp) {
+        var _ref = _temp === void 0 ? {} : _temp,
+            initial = _ref.initial;
+
+        var prevHeight = _this.nodeHeight;
+
+        var nodeRect = _this.node.getBoundingClientRect();
+
+        _this.nodeHeight = nodeRect.height;
+
+        if (!initial && prevHeight !== _this.nodeHeight) {
+          _this.mode = undefined;
+
+          var _this$getOffsets = _this.getOffsets(),
+              offsetTop = _this$getOffsets.offsetTop,
+              offsetBottom = _this$getOffsets.offsetBottom;
+
+          if (_this.nodeHeight + offsetTop + offsetBottom <= _this.viewPortHeight) {
+            // Just make it sticky if node smaller than viewport
+            _this.initial();
+          } else {
+            _this.mode = "relative";
+            _this.node.style.position = "relative";
+            var lowestPossible = _this.parentHeight - _this.nodeHeight;
+            var current = _this.scrollPaneOffset + _this.latestScrollY - _this.naturalTop + offsetTop;
+            _this.offset = Math.max(0, Math.min(lowestPossible, current));
+
+            if (isHeightChange) {
+              _this.offset -= _this.nodeHeight - _this.viewPortHeight + offsetTop;
+            }
+
+            _this.node.style.top = _this.offset + "px";
+          }
+        }
+      };
+
       _this.handleScroll = function () {
-        var _this$getOffsets = _this.getOffsets(),
-            offsetTop = _this$getOffsets.offsetTop,
-            offsetBottom = _this$getOffsets.offsetBottom;
+        var _this$getOffsets2 = _this.getOffsets(),
+            offsetTop = _this$getOffsets2.offsetTop,
+            offsetBottom = _this$getOffsets2.offsetBottom;
 
         var scrollY = _this.scrollPane === window ? window.scrollY : _this.scrollPane.scrollTop;
         if (scrollY === _this.latestScrollY) return;
@@ -1924,9 +1960,9 @@
       };
 
       _this.switchToStickyBottom = function () {
-        var _this$getOffsets2 = _this.getOffsets(),
-            _ = _this$getOffsets2._,
-            offsetBottom = _this$getOffsets2.offsetBottom;
+        var _this$getOffsets3 = _this.getOffsets(),
+            _ = _this$getOffsets3._,
+            offsetBottom = _this$getOffsets3.offsetBottom;
 
         _this.props.onChangeMode(_this.mode, "stickyBottom");
 
@@ -1936,9 +1972,9 @@
       };
 
       _this.switchToStickyTop = function () {
-        var _this$getOffsets3 = _this.getOffsets(),
-            offsetTop = _this$getOffsets3.offsetTop,
-            _ = _this$getOffsets3._;
+        var _this$getOffsets4 = _this.getOffsets(),
+            offsetTop = _this$getOffsets4.offsetTop,
+            _ = _this$getOffsets4._;
 
         _this.props.onChangeMode(_this.mode, "stickyTop");
 
@@ -1970,9 +2006,9 @@
     _proto.initial = function initial() {
       var bottom = this.props.bottom;
 
-      var _this$getOffsets4 = this.getOffsets(),
-          offsetTop = _this$getOffsets4.offsetTop,
-          offsetBottom = _this$getOffsets4.offsetBottom;
+      var _this$getOffsets5 = this.getOffsets(),
+          offsetTop = _this$getOffsets5.offsetTop,
+          offsetBottom = _this$getOffsets5.offsetBottom;
 
       if (bottom) {
         if (this.mode !== "stickyBottom") {
@@ -1992,71 +2028,13 @@
     };
 
     _proto.changeToStickyBottomIfBoxTooLow = function changeToStickyBottomIfBoxTooLow(scrollY) {
-      var _this$getOffsets5 = this.getOffsets(),
-          offsetBottom = _this$getOffsets5.offsetBottom;
+      var _this$getOffsets6 = this.getOffsets(),
+          offsetBottom = _this$getOffsets6.offsetBottom;
 
       if (scrollY + this.scrollPaneOffset + this.viewPortHeight >= this.naturalTop + this.nodeHeight + this.offset + offsetBottom) {
         this.switchToStickyBottom();
       }
-    }
-    /* 
-    updateNode = ({initial} = {}, isHeighChange) => {
-      const prevHeight = this.nodeHeight;
-      const nodeRect = this.node.getBoundingClientRect();
-      this.nodeHeight = nodeRect.height;
-      
-      if (!initial && prevHeight !== this.nodeHeight) {
-        this.mode = undefined;
-        const {offsetTop, offsetBottom} = this.getOffsets();
-        if (this.nodeHeight + offsetTop + offsetBottom <= this.viewPortHeight) {
-          // Just make it sticky if node smaller than viewport
-          this.initial();
-          return;
-        } else {
-          this.mode = "relative";
-          this.node.style.position = "relative";
-          const lowestPossible = this.parentHeight - this.nodeHeight;
-          const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
-          this.offset = Math.max(0, Math.min(lowestPossible, current));
-           if (isHeightChange) {
-            this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
-          };
-           this.node.style.top = `${this.offset}px`;
-        }
-      }
     };
-    */
-    // updateNode = ({initial} = {}, isHeightChange) => {
-    //   const prevHeight = this.nodeHeight;
-    //   const nodeRect = this.node.getBoundingClientRect()
-    //   this.nodeHeight = nodeRect.height;
-    //   if (!initial && prevHeight !== this.nodeHeight) {
-    //     this.mode = undefined;
-    //     const {offsetTop, offsetBottom} = this.getOffsets();
-    //     if (this.nodeHeight + offsetTop + offsetBottom <= this.viewPortHeight) {
-    //       // Just make it sticky if node smaller than viewport
-    //       this.initial();
-    //       return;
-    //     } else {
-    //       this.mode = "relative";
-    //       this.node.style.position = "relative";
-    //       const lowestPossible = this.parentHeight - this.nodeHeight;
-    //       const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
-    //       this.offset = Math.max(0, Math.min(lowestPossible, current));
-    //       if (isHeightChange) {
-    //         this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
-    //       };
-    //       // stay at bottom if at bottom
-    //       if (nodeRect.height + this.latestScrollY >= lowestPossible) {
-    //         this.offset = lowestPossible;
-    //       } else {
-    //         this.offset = Math.max(0, this.offset);
-    //       }
-    //       this.node.style.top = `${this.offset}px`;
-    //     }
-    //   }
-    // };
-    ;
 
     _proto.render = function render() {
       var _this$props2 = this.props,

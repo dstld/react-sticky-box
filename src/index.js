@@ -181,7 +181,6 @@ export default class StickyBox extends React.Component {
     }
   }
 
-  /* 
   updateNode = ({initial} = {}, isHeighChange) => {
     const prevHeight = this.nodeHeight;
     const nodeRect = this.node.getBoundingClientRect();
@@ -209,7 +208,6 @@ export default class StickyBox extends React.Component {
       }
     }
   };
-  */
 
   // updateNode = ({initial} = {}, isHeightChange) => {
   //   const prevHeight = this.nodeHeight;
