@@ -166,7 +166,7 @@ function (_React$Component) {
       }
     };
 
-    _this.updateNode = function (_temp) {
+    _this.updateNode = function (_temp, isHeightChange) {
       var _ref = _temp === void 0 ? {} : _temp,
           initial = _ref.initial;
 
@@ -191,10 +191,19 @@ function (_React$Component) {
           _this.node.style.position = "relative";
           var lowestPossible = _this.parentHeight - _this.nodeHeight;
           var current = _this.scrollPaneOffset + _this.latestScrollY - _this.naturalTop + offsetTop;
-          _this.offset = Math.max(0, Math.min(lowestPossible, current));
+          _this.offset = Math.max(0, Math.min(lowestPossible, current)); // if (isHeightChange) {
+          //   this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
+          // };
+          // stay at bottom if at bottom
 
-          if (isHeightChange) {
-            _this.offset -= _this.nodeHeight - _this.viewPortHeight + offsetTop;
+          if (nodeRect.height + _this.latestScrollY >= lowestPossible) {
+            _this.offset = lowestPossible;
+          } else {
+            if (isHeightChange) {
+              _this.offset -= _this.nodeHeight - _this.viewPortHeight + offsetTop;
+            } else {
+              _this.offset = Math.max(0, _this.offset);
+            }
           }
 
           _this.node.style.top = _this.offset + "px";
@@ -340,7 +349,31 @@ function (_React$Component) {
     if (scrollY + this.scrollPaneOffset + this.viewPortHeight >= this.naturalTop + this.nodeHeight + this.offset + offsetBottom) {
       this.switchToStickyBottom();
     }
-  };
+  } // updateNode = ({initial} = {}, isHeighChange) => {
+  //   const prevHeight = this.nodeHeight;
+  //   const nodeRect = this.node.getBoundingClientRect();
+  //   this.nodeHeight = nodeRect.height;
+  //   if (!initial && prevHeight !== this.nodeHeight) {
+  //     this.mode = undefined;
+  //     const {offsetTop, offsetBottom} = this.getOffsets();
+  //     if (this.nodeHeight + offsetTop + offsetBottom <= this.viewPortHeight) {
+  //       // Just make it sticky if node smaller than viewport
+  //       this.initial();
+  //       return;
+  //     } else {
+  //       this.mode = "relative";
+  //       this.node.style.position = "relative";
+  //       const lowestPossible = this.parentHeight - this.nodeHeight;
+  //       const current = this.scrollPaneOffset + this.latestScrollY - this.naturalTop + offsetTop;
+  //       this.offset = Math.max(0, Math.min(lowestPossible, current));
+  //       if (isHeightChange) {
+  //         this.offset -= (this.nodeHeight - this.viewPortHeight) + offsetTop;
+  //       };
+  //       this.node.style.top = `${this.offset}px`;
+  //     }
+  //   }
+  // };
+  ;
 
   _proto.render = function render() {
     var _this$props2 = this.props,
